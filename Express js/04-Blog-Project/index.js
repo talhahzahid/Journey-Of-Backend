@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("Hello Talha!");
 });
 
-app.use("/api/v1", bloghere);
+app.use("/api/v1", bloghere );
 
 connectdb()
   .then(() => {
