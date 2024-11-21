@@ -26,9 +26,10 @@ const deleteBlog = async (req, res) => {
       message: "Please enter valid id",
     });
   }
-  await blogs.findByIdAndDelete(id);
+  const deleteUserBlog = await blogs.findByIdAndDelete(id);
   res.status(200).json({
     message: "Delete Blog Success",
+    deleteUserBlog,
   });
 };
 
@@ -41,9 +42,17 @@ const singleBlog = async (req, res) => {
     });
   }
   const user = await blogs.findById(id);
-  res.status(200).json({
+  return res.status(200).json({
     user,
   });
 };
 
-export { addBlog, deleteBlog, singleBlog };
+// all blog
+const allBlogs = async (req, res) => {
+  const allUserBlog = await blogs.find({});
+  res.status(200).json({
+    AllUser: allUserBlog,
+  });
+};
+
+export { addBlog, deleteBlog, singleBlog, allBlogs };
