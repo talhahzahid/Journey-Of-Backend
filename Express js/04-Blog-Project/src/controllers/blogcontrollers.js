@@ -33,6 +33,23 @@ const deleteBlog = async (req, res) => {
   });
 };
 
+// edit blog
+const editBlog = async (req, res) => {
+  const { id } = req.params;
+  const { title, description } = req.body;
+  const editIdFromDatabase = await blogs.findByIdAndUpdate(id, {
+    title: title,
+    description: description,
+  });
+  if (!id) {
+    return res.status(400).json({ message: "No Id Found" });
+  }
+  res.status(200).json({
+    message: "ID Updated Successfully",
+    check: editIdFromDatabase,
+  });
+};
+
 //get single blog
 const singleBlog = async (req, res) => {
   const { id } = req.params;
@@ -55,4 +72,4 @@ const allBlogs = async (req, res) => {
   });
 };
 
-export { addBlog, deleteBlog, singleBlog, allBlogs };
+export { addBlog, deleteBlog, editBlog, singleBlog, allBlogs };
