@@ -12,7 +12,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.6",
     "express": "^4.21.1",
+    "mongoose": "^8.8.3",
     "nodemon": "^2.0.22"
   }
 }

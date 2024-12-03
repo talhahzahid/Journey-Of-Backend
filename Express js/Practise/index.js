@@ -1,64 +1,41 @@
+import dotenv from "dotenv"
+dotenv.config()
 import express from "express"
+import connectdb from "./src/db/index.js";
 const app = express()
-const port = 4000;
+const port = process.env.PORT;
+import bcrypt from "bcrypt"
 
 app.use(express.json())
-const users = []
 
 app.get('/', (req, res) => {
     res.send('Hello world! ')
 })
-app.get('/users', (req, res) => {
-    // res.send('hello users')
-    res.send(users)
+
+app.post('/hashpassword', async (req, res) => {
+    const { email, password } = req.body
+    if (!email || !password) return res.json({ "message": "Both Feild Are Required" })
+    const user = await bcrypt.hash(password, 10)
+    res.json({ "Hashpassword": user })
 })
-app.post('/users', (req, res) => {
-    const { name } = req.body;
-    if (!name) {
-        return res.status(400).json({
-            "message": "Name is required"
+const generateHash = "$2b$10$2d5NC186Id8If721GhRIyuHDvUDojUuNehcXdDtrb.Bn/Z5CICmMS"
+app.post('/checkpassword', async (req, res) => {
+    const { email, password } = req.body
+    if (!email || !password) return res.json({ "message": "Both Feild Are Required" })
+    const user = await bcrypt.compare(password, generateHash)
+    if (!user) return res.status(404).json({ 'message': 'Incorrect password' })
+    res.status(200).json({ message: 'password is correct' })
+})
+
+
+
+
+connectdb()
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`Example app listening on port ${port}`)
         })
-    }
-    users.push({
-        name: name,
-        id: Date.now()
     })
-    res.status(200).json({
-        "message": "Name entre is succesfully",
-        "UserData": users
+    .catch((err) => {
+        console.log(err);
     })
-})
-
-app.delete('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const index = users.findIndex((item) => item.id === +id);
-    if (index === -1) {
-        return res.status(400).json({ "message": "id is not same" })
-    }
-    users.splice(index, 1)
-    res.status(200).json({
-        "message": "Name is deleted succesfully "
-    })
-})
-app.put('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const { name } = req.body;
-    const index = users.findIndex((item) => item.id === +id)
-    if (index === -1) {
-        return res.status(404).json({ "Message": "Please enter valid id" })
-    }
-    if (!name) {
-        return res.status(404).json({ "Message": "Name is required " })
-    }
-
-    users[index].name = name
-
-    res.status(200).json({
-        "Messagae": "Name upadated succesfully",
-        "Updated Name": users
-    })
-
-})
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
