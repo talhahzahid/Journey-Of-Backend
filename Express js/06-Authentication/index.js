@@ -3,13 +3,14 @@ dotenv.config()
 import express from "express"
 const app = express()
 const port = process.env.PORT
+import cookieParser from "cookie-parser";
 import connectdb from "./src/db/index.js"
 import userRouter from "./src/routes/user.routes.js"
 
 
 // middleware
 app.use(express.json())
-
+app.use(cookieParser())
 app.get('/', (req, res) => {
     res.send('hello authentication')
 })
