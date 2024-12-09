@@ -6,14 +6,7 @@ const port = 3000
 app.use(cors())
 app.use(express.json())
 const users = [
-    {
-        id: 1,
-        title: "talha"
-    },
-    {
-        id: 2,
-        title: "arreb"
-    }
+
 ]
 
 app.get('/', (req, res) => {

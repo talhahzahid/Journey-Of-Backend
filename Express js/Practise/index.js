@@ -29,6 +29,10 @@ app.post('/checkpassword', async (req, res) => {
 
 
 
+// jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' }, function(err, token) {
+//     console.log(token);
+//   });
+
 
 connectdb()
     .then(() => {

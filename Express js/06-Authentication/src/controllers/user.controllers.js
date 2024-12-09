@@ -38,7 +38,7 @@ const registerUser = async (req, res) => {
     });
 
 
-    res.cookie("refreshToken", refreshToken, { http: true, secure: false });
+    // res.cookie("refreshToken", refreshToken, { http: true, secure: false });
 
     res.status(200).json({ message: "User added successfully", data: addUser })
 
@@ -62,10 +62,10 @@ const loginUser = async (req, res) => {
     if (!isValidPassword)
         return res.status(400).json({ message: "incorrect password" });
     // generateToken 
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    // const accessToken = generateAccessToken(user);
+    // const refreshToken = generateRefreshToken(user);
     // cookies
-    res.cookie("refreshToken", refreshToken, { http: true, secure: false });
+    // res.cookie("refreshToken", refreshToken, { http: true, secure: false });
 
     res.json({
         message: "login",
@@ -73,40 +73,51 @@ const loginUser = async (req, res) => {
     })
 }
 
-//logout user 
+// logout user 
 const logoutUser = (req, res) => {
     res.clearCookie("refreshToken");
     res.json({ message: "user logout successfully" });
 };
 
-// refershToken
-// const refersh = async (req, res) => {
-//     const refershToken = req.cookies.refershToken || req.body.refershToken
-//     if (!refershToken) return res.status(404).json({ message: "no user found" })
-//     const verifyToken = jwt.verify(refershToken, process.env.REFRESH_JWT_SECRET)
-//     const user = await User.findOne({ email: verifyToken.email })
-//     if (!user) return res.json({ message: "enter valid emaail" })
-//     const newToken = generateAccessToken(user)
-//     res.json({ message: "access token generated", accesstoken: newToken });
-//     res.json({ verifyToken })
-
-// }
+// refreshToken
 const refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
-    if (!refreshToken)
-      return res.status(401).json({ message: "no refresh token found!" });
-  
-    const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
-  
-    const user = await User.findOne({ email: decodedToken.email });
-  
-    if (!user) return res.status(404).json({ message: "invalid token" });
-  
-    const generateToken = generateAccessToken(user);
-    res.json({ message: "access token generated", accesstoken: generateToken });
-  
-    res.json({ decodedToken });
-  };
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: "No refresh token found!" });
+    }
+
+    try {
+        const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
+        const user = await User.findOne({ email: decodedToken.email });
+
+        if (!user) {
+            return res.status(404).json({ message: "Invalid token" });
+        }
+
+        const generateToken = generateAccessToken(user);
+
+        // Send a single response
+        return res.json({
+            message: "Access token generated",
+            accesstoken: generateToken,
+            decodedToken: decodedToken  // Include decodedToken in the response if needed
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+
+// const refreshToken = async (req, res) => {
+//     const refreshToken = req.cookies.refreshToken || req.body.refreshToken
+//     if (!refreshToken) return res.status(404).json({ message: "no user found" })
+//     const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET)
+//     const user = await User.findOne({ email: decodedToken.email })
+//     if (!user) return res.status(404).json({ message: "Your Not Register In this System" })
+//     const generateToken = generateAccessToken(user)
+//     res.json({ message: generateToken })
+//     res.json({ decodedToken })
+// }
 
 
 export { registerUser, loginUser, logoutUser, refreshToken }                              
