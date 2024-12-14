@@ -8,7 +8,7 @@ const register = async (req, res) => {
     if (!password) return res.status(400).json({ message: 'Password is required' })
     try {
         const user = User.findOne({ email })
-        if (!user) return res.status(400).json({ message: "no user found this email" })
+        if (user) return res.status(400).json({ message: "user already exits" })
         await User.create({ fullname, email, password })
         res.status(200).json({ message: "user register successfully" })
     } catch (error) {
