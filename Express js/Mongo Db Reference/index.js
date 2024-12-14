@@ -12,7 +12,7 @@ import postRouter from './src/routes/post.routes.js'
 app.use(express.json())
 app.use('/user', router)
 app.use('/user1', postRouter)
-app.get('/', (req, res) => {
+app.get('/', (req, res) => {    
     res.send('Hello World!')
 })
 
