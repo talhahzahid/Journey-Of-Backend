@@ -1,8 +1,7 @@
-import Like from "../models/like.models.js"; // Ensure the correct model is imported
+import Like from "../models/like.models.js";
 
 const userLike = async (req, res) => {
     const { userId, postId } = req.body;
-
     try {
         const existingLike = await Like.findOne({ userId, postId });
         if (existingLike) {
