@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 
 
-const likeSchema = new mongoose.model({
+const likeSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    PostId: {
+    postId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'post',
         required: true,
     },
 })
